@@ -2,13 +2,13 @@ from __future__ import unicode_literals
 
 import csv
 import os
+
 import six
 
 
 class Storage:
     def __init__(self):
-        self._filename = '{}/.pocket-index'.format(
-            os.path.expanduser('~'))
+        self._filename = "{}/.pocket-index".format(os.path.expanduser("~"))
 
     def is_empty(self):
         if not os.path.exists(self._filename):
@@ -27,9 +27,9 @@ class Storage:
         if self.is_empty():
             write_header = True
 
-        mode = 'a+b'
+        mode = "a+b"
         if six.PY3:
-            mode = 'a+t'
+            mode = "a+t"
 
         with open(self._filename, mode) as csv_file:
             dict_writer = csv.DictWriter(csv_file, data[0].keys())
@@ -38,15 +38,15 @@ class Storage:
 
             dict_writer.writerows(self._encode_data(data))
 
-    def read(self, limit=10, order='asc'):
+    def read(self, limit=10, order="asc"):
         index = []
 
         if not os.path.exists(self._filename):
             return index
 
-        mode = 'rb'
+        mode = "rb"
         if six.PY3:
-            mode = 'r'
+            mode = "r"
 
         row_counter = 0
         with open(self._filename, mode) as csv_file:
@@ -54,13 +54,13 @@ class Storage:
             for row in reader:
                 index.append(row)
 
-                if order == 'asc':
+                if order == "asc":
                     row_counter += 1
 
                 if row_counter == limit:
                     break
 
-        if order == 'desc':
+        if order == "desc":
             index = index[::-1]
 
         return index[0:limit]
@@ -76,5 +76,5 @@ class Storage:
         for index, item in enumerate(data):
             for key, value in item.items():
                 if isinstance(value, six.string_types):
-                    data[index][key] = value.encode('utf-8')
+                    data[index][key] = value.encode("utf-8")
         return data

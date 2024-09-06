@@ -1,9 +1,9 @@
-import os
 import configparser
+import os
 
 
 class Configs:
-    _section_name = 'pocket'
+    _section_name = "pocket"
 
     def __init__(self):
         path = self._get_file_path()
@@ -29,7 +29,7 @@ class Configs:
         self._config_parser.set(self._section_name, name, str(value))
 
     def write(self):
-        self._config_parser.write(open(self._get_file_path(), 'w'))
+        self._config_parser.write(open(self._get_file_path(), "w"))
 
     def _get_file_path(self):
-        return '{}/.pocket-config'.format(os.path.expanduser('~'))
+        return "{}/.pocket-config".format(os.path.expanduser("~"))
