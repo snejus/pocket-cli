@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "pocket-cli"
+version = "0.1.5"
+description = "A terminal application for Pocket"
+authors = ["Rakan Alhneiti <rakan.alhneiti@gmail.com>"]
+readme = "README.md"
+license = "Proprietary"
+homepage = "https://github.com/snejus/pocket-cli"
+repository = "https://github.com/snejus/pocket-cli" 
+packages = [{ include = "pocket_cli" }]
+include = ["README.md"]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+
+click = "6.2"
+future = "0.15.2"
+pocket-api = "*"
+progress = "1.2"
+six = "1.10.0" 
+
+[tool.poetry.scripts]
+pocket-cli = "pocket_cli.cli:main"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
