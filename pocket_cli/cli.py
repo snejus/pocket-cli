@@ -1,13 +1,18 @@
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, annotations, print_function
 
+import json
 import random
+import re
 import subprocess
 import sys
 import webbrowser
 from builtins import input
 
 import click
+import requests
 import six
+from fake_useragent import UserAgent
+from rich_tables.generic import console, flexitable
 
 from .app import PocketApp
 from .exceptions import AppException, AppNotConfigured
@@ -15,10 +20,14 @@ from .utils import format_article
 
 pocket_app = PocketApp()
 
+ua = UserAgent()
+
 WORDS_PER_MINUTE = 180
 
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+RE_OG_CONTENT = re.compile(r"(?<=<title>)[^<]+")
+RE_TAG = re.compile(r"(?<=/tag/)[^/]+")
 
 
 @click.group(context_settings=CONTEXT_SETTINGS)
@@ -81,7 +90,7 @@ def configure(consumer_key, sort_field, words_per_minute):
 
 
 @click.command(name="add")
-@click.option("--url", "-u", help="The URL to be added")
+@click.argument("url")
 @click.option("--title", "-t", help="The article's title")
 @click.option(
     "--tags",
@@ -89,11 +98,20 @@ def configure(consumer_key, sort_field, words_per_minute):
     multiple=True,
     help="Tags to be associated. " "Can be multiple tags --tags=tag1, --tags=tag2",
 )
-def add_article(url, title, tags):
-    response = pocket_app.add_article(url, title, tags)
-    if response and response["status"] == 1:
-        pocket_app.fetch_articles(False)
-        print("URL has been added")
+def add_article(url: str, title: str | None, tags: tuple[str, ...]):
+    if not title:
+        line: str
+        r = requests.get(url, headers={"User-Agent": ua.random}, timeout=5)
+        text = r.text
+        if m := RE_OG_CONTENT.search(text):
+            title = m.group()
+        tags = tuple(RE_TAG.findall(text))
+
+    if response := pocket_app.add_article(url, title, tags):
+        if response["status"] == 1:
+            pocket_app.fetch_articles(False)
+
+        console.print(flexitable(response))
 
 
 @click.command(name="list")

@@ -6,21 +6,29 @@ authors = ["Rakan Alhneiti <rakan.alhneiti@gmail.com>"]
 readme = "README.md"
 license = "Proprietary"
 homepage = "https://github.com/snejus/pocket-cli"
-repository = "https://github.com/snejus/pocket-cli" 
+repository = "https://github.com/snejus/pocket-cli"
 packages = [{ include = "pocket_cli" }]
 include = ["README.md"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.8"
 
 click = "6.2"
+fake-useragent = ">=1.5.1"
 future = "0.15.2"
 pocket-api = "*"
 progress = "1.2"
-six = "1.10.0" 
+requests = ">=2.32.3"
+rich-tables = ">=0.6.1"
+six = "1.10.0"
 
 [tool.poetry.scripts]
 pocket-cli = "pocket_cli.cli:main"
+
+[tool.poetry.group.dev.dependencies]
+mypy = ">=1.11.2"
+types-click = ">=7.1.8"
+types-requests = ">=2.32.0.20240914"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
